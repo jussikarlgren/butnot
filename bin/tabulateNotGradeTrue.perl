@@ -1,0 +1,84 @@
+# march 2017
+open(AMPTRULIST, "<poles/en/enamplifyTruly.list");
+while (<AMPTRULIST>) {
+    chomp;
+    $amplifycommit{$_} = 1;
+}
+close AMPTRULIST;
+open(AMPLIST, "<poles/en/enamplifyGrade.list");
+while (<AMPLIST>) {
+    chomp;
+    $amplifygrade{$_} = 1;
+}
+close AMPLIST;
+open(NEGLIST, "<poles/en/enpurenegation.list");
+while (<NEGLIST>) {
+    chomp;
+    s/\'//;
+    $negation{$_} = 1;
+}
+close NEGLIST;
+$lines = 0;
+$alllines = 0;
+while (<>) {
+    $lines++;
+    $alllines++;
+    s/™//g;
+    s/\\//g;
+    ($item,$txt) = split "\t";
+    next if length $item < 2;
+    @words = split " ",$txt;
+    $seen = 0;
+    $skiptru = 5;
+    $skipneg = 5;
+    $skipgra = 5;
+    $negseen = 0;
+    $truseen = 0;
+    $graseen = 0;
+    $negskip = 0;
+    $truskip = 0;
+    $graskip = 0;
+    for $w (@words) {
+	if ($w eq $item) {
+	    $frequency{$item}++; 
+	    $seen = 1;
+	    if ($negskip) {$skipnegscore{$item}++; $negskip = 0;}
+	    if ($graskip) {$skipgrascore{$item}++; $graskip = 0;}
+	    if ($truskip) {$skiptruscore{$item}++; $truskip = 0;}
+	    if ($negseen) {$prevnegscore{$item}++;}
+	    if ($graseen) {$prevgrascore{$item}++;}
+	    if ($truseen) {$prevtruscore{$item}++;}
+	}
+	if ($negation{$w}) {
+	    if (! $seen) {$negskip = $skipneg;}
+	    $negseen = 1;
+	}	    
+	if ($negskip > 0) {$negskip--;}
+	if ($amplifygrade{$w}) {
+	    if (! $seen) {$graskip = $skipgra;}
+	    $graseen = 1;
+	}	    
+	if ($graskip > 0) {$graskip--;}
+	if ($amplifycommit{$w}) {
+	    if (! $seen) {$truskip = $skiptru;}
+	    $truseen = 1;
+	}	    
+	if ($truskip > 0) {$truskip--;}
+    }
+    if ($seen && $negseen) {$negscore{$item}++;}
+    if ($seen && $graseen) {$grascore{$item}++;}
+    if ($seen && $truseen) {$truscore{$item}++;}
+if ($lines > 100000) {
+    print "$allines ==============================\n";
+print "item\tfrequency\tneg\tprevneg\tscopeneg\tgrade\tprevgrade\tscopegrade\ttruly\tprevtrue\tscopetrue\n";
+for $key (keys %frequency) {
+    print "$key\t$frequency{$key}\t$negscore{$key}\t$prevnegscore{$key}\t$skipnegscore{$key}\t$grascore{$key}\t$prevgrascore{$key}\t$skipgrascore{$key}\t$truscore{$key}\t$prevtruscore{$key}\t$skiptruscore{$key}\n";
+}
+$lines = 0;
+}
+}
+    print "$allines ==============================\n";
+print "item\tfrequency\tneg\tprevneg\tscopeneg\tgrade\tprevgrade\tscopegrade\ttruly\tprevtrue\tscopetrue\n";
+for $key (keys %frequency) {
+    print "$key\t$frequency{$key}\t$negscore{$key}\t$prevnegscore{$key}\t$skipnegscore{$key}\t$grascore{$key}\t$prevgrascore{$key}\t$skipgrascore{$key}\t$truscore{$key}\t$prevtruscore{$key}\t$skiptruscore{$key}\n";
+}

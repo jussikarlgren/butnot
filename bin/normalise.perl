@@ -1,0 +1,12 @@
+while (<>) {
+    chop;
+    @items = split;
+    print;
+    print "\t";
+    if ($items[4] > 0) {
+	print $items[4]/$items[1]*100 ."\t";
+	print $items[7]/$items[1]*100 ."\t";
+	print $items[10]/$items[1]*100 ."\t";
+    }
+    print "\n";
+}
