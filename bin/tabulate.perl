@@ -55,5 +55,7 @@ $lines = 0;
     print "$allines ==============================\n";
 print "key\tfrequency\tnegscore\tbutscore\thedscore\tampscore\tseemscore\tseemedscore\t-lyscore\n";
 for $key (keys %frequency) {
-    print "$key\t$frequency{$key}\t$negscore{$key}\t$butscore{$key}\t$hedscore{$key}\t$ampscore{$key}\t$seemscore{$key}\t$seemedscore{$key}\t$lyscore{$key}\n";
+    print "$key\t$frequency{$key}\t$negscore{$key}\t$butscore{$key}\t$hedscore{$key}\t$ampscore{$key}\t$seemscore{$key}\t$seemedscore{$key}\t$lyscore{$key}\t";
+    print $negscore{$key}/$frequency{$key}."\t".$butscore{$key}/$frequency{$key}."\t".$hedscore{$key}/$frequency{$key}."\t".$ampscore{$key}/$frequency{$key}."\t".$seemscore{$key}/$frequency{$key}."\t".$seemedscore{$key}/$frequency{$key}."\t".$lyscore{$key}/$frequency{$key}."\t" if $frequency{$key} > 0;
+    print "\n";
 }
